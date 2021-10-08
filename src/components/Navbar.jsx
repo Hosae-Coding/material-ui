@@ -8,10 +8,11 @@ import {
    Toolbar,
    Typography,
 } from '@material-ui/core';
-import { Mail, Notifications, Search } from '@material-ui/icons';
+import { Cancel, Mail, Notifications, Search } from '@material-ui/icons';
+import { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
-   Toolbar: {
+   toolbar: {
       display: 'flex',
       justifyContent: 'space-between',
    },
@@ -37,30 +38,40 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.shape.borderRadius,
       width: '50%',
       [theme.breakpoints.down('sm')]: {
-         display: 'none',
+         display: (props) => (props.open ? 'flex' : 'none'),
+         width: '70%',
       },
    },
    input: {
       color: 'white',
       marginLeft: theme.spacing(1),
    },
-   icons: {
-      display: 'flex',
-      alignItems: 'center',
-   },
-   badge: {
-      marginRight: theme.spacing(1.8),
+   cancel: {
+      [theme.breakpoints.up('sm')]: {
+         display: 'none',
+      },
    },
    searchButton: {
+      marginRight: theme.spacing(2),
+      [theme.breakpoints.up('sm')]: {
+         display: 'none',
+      },
+   },
+   icons: {
+      alignItems: 'center',
+      display: (props) => (props.open ? 'none' : 'flex'),
+   },
+   badge: {
       marginRight: theme.spacing(2),
    },
 }));
 
 const Navbar = () => {
-   const classes = useStyles();
+   const [open, setOpen] = useState(false);
+   const classes = useStyles({ open });
    return (
-      <AppBar>
-         <Toolbar className={classes.Toolbar}>
+      <AppBar position="fixed">
+         <Toolbar className={classes.toolbar}>
             <Typography variant="h6" className={classes.logoLg}>
                HS Dev
             </Typography>
@@ -73,9 +84,16 @@ const Navbar = () => {
                   placeholder="Search Here!"
                   className={classes.input}
                />
+               <Cancel
+                  className={classes.cancel}
+                  onClick={() => setOpen(false)}
+               />
             </div>
             <div className={classes.icons}>
-               <Search className={classes.searchButton} />
+               <Search
+                  className={classes.searchButton}
+                  onClick={() => setOpen(true)}
+               />
                <Badge
                   badgeContent={4}
                   color="secondary"
